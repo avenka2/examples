@@ -74,12 +74,21 @@ export default async function handler(req: NextRequest) {
     requestHeaders['OpenAI-Organization'] = process.env.OPENAI_API_ORG
   }
 
-  const response = await fetch('https://api.openai.com/v1/completions', {
-    headers: requestHeaders,
-    method: 'POST',
-    body: JSON.stringify(payload),
+  const response = await fetch('https://api.openai.com/v1/engines/text-davinci-002/completions', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
+  },
+  body: JSON.stringify({
+    prompt: `Human: ${message}\nAI:`,
+    max_tokens: 1024,
+    n: 1,
+    temperature: 0.7,
   })
-
+  
+})  
+  
   const data = await response.json()
 
   if (data.error) {
